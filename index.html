@@ -3,63 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glitch Intelligence | Enterprise AI Suite</title>
+    <title>Glitch Intelligence | Enterprise AI SaaS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="styles.css">
-    <script src="data_layer.js"></script>
-    <script src="analytics_engine.js"></script>
-    <script src="theme_engine.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="engine.js" defer></script>
+    <script src="app.js" defer></script>
 </head>
-<body class="bg-[#0a0a0c] text-slate-300 font-sans flex min-h-screen">
+<body class="bg-[#050505] text-slate-400 font-sans flex h-screen overflow-hidden">
 
-    <aside class="w-64 border-r border-zinc-900 flex flex-col p-6 space-y-8 bg-black">
-        <div class="text-white font-bold tracking-tighter text-xl">GLITCH_INTEL</div>
+    <aside class="w-64 border-r border-zinc-900 bg-black flex flex-col p-6">
+        <div class="mb-10">
+            <h1 class="text-white text-xl font-bold tracking-tighter">GLITCH_INTEL <span class="text-cyan-500 text-[10px]">v3.0</span></h1>
+        </div>
         
-        <nav class="flex-1 space-y-2 text-xs uppercase tracking-widest">
-            <a href="#" class="block p-3 bg-zinc-900 text-cyan-400 rounded-lg">Overview</a>
-            <a href="#" class="block p-3 hover:bg-zinc-900 rounded-lg transition">Keyword_Audit</a>
-            <a href="#" class="block p-3 hover:bg-zinc-900 rounded-lg transition">Financial_Glitch</a>
-            <a href="#" class="block p-3 hover:bg-zinc-900 rounded-lg transition">Inventory_AI</a>
+        <nav class="flex-1 space-y-1">
+            <button onclick="App.showTab('audit')" class="w-full text-left p-3 rounded-lg bg-zinc-900 text-white text-xs uppercase tracking-widest font-bold">AI_Audit_Tool</button>
+            <button onclick="App.showTab('market')" class="w-full text-left p-3 rounded-lg hover:bg-zinc-900 text-xs uppercase tracking-widest transition">Market_Trends</button>
+            <button onclick="App.showTab('config')" class="w-full text-left p-3 rounded-lg hover:bg-zinc-900 text-xs uppercase tracking-widest transition">Settings</button>
         </nav>
 
-        <div class="border-t border-zinc-900 pt-6">
-            <button onclick="ThemeEngine.toggle()" id="themeBtn" class="w-full text-[10px] border border-zinc-800 py-2 rounded">MODE: DARK</button>
+        <div class="pt-6 border-t border-zinc-900">
+            <div class="bg-zinc-900 p-4 rounded-lg text-[10px]">
+                <p class="text-zinc-500">API_STATUS:</p>
+                <p id="apiIndicator" class="text-green-500 font-bold">CONNECTING...</p>
+            </div>
         </div>
     </aside>
 
-    <main class="flex-1 p-10 overflow-y-auto">
-        <header class="flex justify-between items-center mb-10">
-            <h2 class="text-2xl font-bold text-white">Dashboard_v3.0</h2>
+    <main class="flex-1 flex flex-col overflow-y-auto">
+        <header class="p-6 border-b border-zinc-900 flex justify-between items-center bg-black/50 backdrop-blur-md sticky top-0 z-50">
+            <h2 id="tabTitle" class="text-white font-bold uppercase tracking-widest text-sm">AI_Audit_Tool</h2>
             <div class="flex gap-4">
-                <button class="bg-cyan-600 text-black px-6 py-2 text-xs font-bold rounded shadow-lg shadow-cyan-900/20">UPGRADE_PRO</button>
+                <button class="bg-cyan-600 text-black px-4 py-2 text-[10px] font-bold rounded uppercase">Upgrade_To_Pro</button>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="p-6 bg-zinc-950 border border-zinc-900 rounded-xl">
-                <p class="text-[10px] text-zinc-500 mb-1">TOTAL_AUDITS</p>
-                <h4 class="text-3xl font-bold text-white">1,284</h4>
-            </div>
-            <div class="p-6 bg-zinc-950 border border-zinc-900 rounded-xl">
-                <p class="text-[10px] text-zinc-500 mb-1">GLITCHES_CAUGHT</p>
-                <h4 class="text-3xl font-bold text-red-500">42</h4>
-            </div>
-            <div class="p-6 bg-zinc-950 border border-zinc-900 rounded-xl">
-                <p class="text-[10px] text-zinc-500 mb-1">DATA_HEALTH</p>
-                <h4 class="text-3xl font-bold text-green-500">98.2%</h4>
-            </div>
-        </div>
+        <section id="content" class="p-8 max-w-5xl mx-auto w-full">
+            <div class="grid grid-cols-1 gap-6">
+                <div class="bg-zinc-950 border border-zinc-900 p-8 rounded-2xl">
+                    <h3 class="text-white mb-2 font-bold">Data_Anomaly_Scanner</h3>
+                    <p class="text-[10px] text-zinc-500 mb-6">Drop CSV for deep-learning anomaly detection</p>
+                    
+                    <label class="border-2 border-dashed border-zinc-800 p-12 block rounded-xl hover:border-cyan-500 cursor-pointer bg-black/40 text-center transition-all">
+                        <input type="file" id="csvPicker" accept=".csv" class="hidden">
+                        <span id="fileStatus" class="text-xs uppercase text-zinc-600">Click to upload audit file</span>
+                    </label>
+                </div>
 
-        <section class="bg-zinc-950 border border-zinc-900 rounded-2xl p-8">
-            <div class="mb-6">
-                <h3 class="font-bold text-white">AI_ANOMALY_DETECTOR</h3>
-                <p class="text-[10px] text-zinc-500">UPLOAD CSV TO INITIATE MULTI-NODE SCAN</p>
-            </div>
-            <input type="file" id="csvPicker" class="block w-full text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-zinc-900 file:text-cyan-400 hover:file:bg-zinc-800 cursor-pointer">
-            <div id="terminal" class="mt-6 p-4 bg-black rounded-lg h-48 overflow-y-auto text-[10px] font-mono border border-zinc-900">
-                <p class="text-zinc-700 italic">SYSTEM_READY...</p>
+                <div class="bg-black border border-zinc-900 rounded-xl overflow-hidden shadow-2xl">
+                    <div class="bg-zinc-900/50 p-3 border-b border-zinc-800 flex justify-between">
+                        <span class="text-[9px] font-bold uppercase">Live_Audit_Terminal</span>
+                        <button onclick="App.clearLogs()" class="text-[9px] text-zinc-500 hover:text-white uppercase">Clear</button>
+                    </div>
+                    <div id="terminal" class="p-6 h-64 overflow-y-auto font-mono text-[10px] space-y-1">
+                        <p class="text-zinc-700 italic">SYSTEM_IDLE: Waiting for data input...</p>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
+
 </body>
 </html>
