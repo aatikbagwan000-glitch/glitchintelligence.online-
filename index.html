@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="styles.css">
-    
     <script src="data_layer.js"></script>
     <script src="analytics_engine.js"></script>
     <script src="theme_engine.js"></script>
@@ -16,7 +15,7 @@
     
     <header class="max-w-6xl mx-auto flex justify-between items-center mb-10 border-b border-zinc-900 pb-6">
         <div>
-            <h1 class="text-3xl font-bold tracking-tighter uppercase">GLITCH_INTELLIGENCE</h1>
+            <h1 class="text-3xl font-bold glitch-text uppercase">GLITCH_INTELLIGENCE</h1>
             <p class="text-[10px] text-cyan-700 tracking-[0.5em] uppercase mt-1">Autonomous Audit Engine v2.0</p>
         </div>
         <div class="flex gap-3 items-center">
@@ -57,26 +56,29 @@
                     <p class="text-zinc-700 italic">Waiting for data stream...</p>
                 </div>
             </div>
+            <div class="flex justify-end">
+                <button onclick="ReportGenerator.download(document.getElementById('terminal').innerText, document.getElementById('statusText').innerText)" 
+                        class="text-[9px] border border-cyan-900 bg-cyan-950/20 px-6 py-2 hover:bg-cyan-900/40 transition-all text-cyan-400 font-bold uppercase tracking-widest">
+                    Generate_Audit_Report.TXT
+                </button>
+            </div>
         </div>
     </main>
 
     <script>
-        // Chart Initialization
         const ctx = document.getElementById('glitchChart').getContext('2d');
         const glitchChart = new Chart(ctx, {
             type: 'line',
-            data: { labels: ['0s','5s','10s','15s','20s','25s'], datasets: [{ data: [0,0,0,0,0,0], borderColor: '#06b6d4', tension: 0.4, fill: true, backgroundColor: 'rgba(6,182,212,0.05)' }] },
+            data: { labels: ['0s','5s','10s','15s','20s','25s'], datasets: [{ data: [0,0,0,0,0,0], borderColor: '#06b6d4', tension: 0.4 }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } }
         });
 
-        // CSV Handler
         document.getElementById('csvPicker').addEventListener('change', function(e) {
             const file = e.target.files[0];
             const terminal = document.getElementById('terminal');
             if (file) {
-                document.getElementById('statusText').innerText = "AUDITING: " + file.name.toUpperCase();
+                document.getElementById('statusText').innerText = file.name.toUpperCase();
                 terminal.innerHTML = `<p class="text-cyan-500">>>> INITIATING SECURE HANDSHAKE...</p>`;
-                
                 const reader = new FileReader();
                 reader.onload = async (event) => {
                     try {
@@ -90,13 +92,11 @@
                                 log.innerText = `[AI_AUDIT] >> ${line}`;
                                 terminal.appendChild(log);
                                 terminal.scrollTop = terminal.scrollHeight;
-                                
                                 glitchChart.data.datasets[0].data.shift();
-                                glitchChart.data.datasets[0].data.push(isGlitch ? 80 : 10);
+                                glitchChart.data.datasets[0].data.push(isGlitch ? 85 : 10);
                                 glitchChart.update();
                             }, i * 350);
                         });
-                        if(window.DataManager) DataManager.pushEvent('Data_Audit', 'Success', file.name);
                     } catch (err) {
                         terminal.innerHTML += `<p class="text-red-600">>>> ERROR: ${err.message}</p>`;
                     }
