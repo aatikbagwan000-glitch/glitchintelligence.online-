@@ -1,44 +1,62 @@
-const GEMINI_API_KEY = "YOUR_ACTUAL_API_KEY"; // Ensure this is active
+<script>
+    // 1. CONFIGURATION
+    const API_KEY = "YOUR_GEMINI_API_KEY"; // Double-check this in Google AI Studio
+    const debugConsole = document.getElementById('debugConsole');
 
-async function runGlitchAudit(csvRawData) {
-    trackEvent('AI_Audit', 'Start_Analysis', 'Gemini_1.5_Flash');
-    
-    const prompt = `Act as an elite Data Quality Engineer. Scan this CSV for 'glitches': 
-    1. Check if patient_id is unique. 
-    2. Flag hba1c_latest values > 9.0 as 'High Risk'. 
-    3. Find rows where 'dr_grade' contradicts the medical notes.
-    DATA: ${csvRawData}`;
+    async function analyzeData(csvContent) {
+        // Log start to your Debugger
+        const startLog = document.createElement('p');
+        startLog.className = "text-yellow-500 animate-pulse";
+        startLog.innerText = ">>> INITIATING AI HANDSHAKE...";
+        debugConsole.appendChild(startLog);
 
-    try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-        });
+        const prompt = `AUDIT TASK: Find glitches in this data. 
+        Focus on: Duplicate IDs, invalid medical scores, and inconsistent labels.
+        DATA: ${csvContent}`;
 
-        const data = await response.json();
-        const auditResults = data.candidates[0].content.parts[0].text;
-        
-        // Output to your Professional Debugger
-        const auditLog = document.createElement('div');
-        auditLog.className = "border-l-2 border-red-600 pl-4 py-2 bg-red-950/10 my-4";
-        auditLog.innerHTML = `
-            <p class="text-red-500 font-bold uppercase">[GLITCHES_FOUND]</p>
-            <pre class="text-[9px] text-zinc-400 mt-2">${auditResults}</pre>
-        `;
-        document.getElementById('debugConsole').appendChild(auditLog);
-        
-    } catch (error) {
-        trackEvent('System_Error', 'Audit_Failed', error.message);
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }]
+                })
+            });
+
+            const result = await response.json();
+            
+            // 2. ERROR CHECKING
+            if (result.error) {
+                throw new Error(result.error.message);
+            }
+
+            // 3. DISPLAY RESULTS
+            const aiFindings = result.candidates[0].content.parts[0].text;
+            
+            const reportDiv = document.createElement('div');
+            reportDiv.className = "bg-red-950/20 border border-red-500 p-4 my-4 rounded shadow-[0_0_15px_rgba(255,0,0,0.2)]";
+            reportDiv.innerHTML = `
+                <h4 class="text-red-500 font-black mb-2">[GLITCH_REPORT_GENERATED]</h4>
+                <div class="text-zinc-300 text-[10px] leading-relaxed whitespace-pre-wrap">${aiFindings}</div>
+            `;
+            debugConsole.appendChild(reportDiv);
+            debugConsole.scrollTop = debugConsole.scrollHeight;
+
+        } catch (err) {
+            const errorLog = document.createElement('p');
+            errorLog.className = "text-red-600 font-bold";
+            errorLog.innerText = ">>> CRITICAL_ERROR: " + err.message;
+            debugConsole.appendChild(errorLog);
+        }
     }
-}
 
-// Update your File Listener to trigger the audit
-document.getElementById('csvPicker').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => runGlitchAudit(event.target.result);
-        reader.readAsText(file);
-    }
-});
+    // 4. TRIGGER ON UPLOAD
+    document.getElementById('csvPicker').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => analyzeData(event.target.result);
+            reader.readAsText(file);
+        }
+    });
+</script>
