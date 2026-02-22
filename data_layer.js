@@ -1,11 +1,11 @@
 const DataManager = {
-    init: function() {
-        window.digitalData = { page: { pageName: document.title }, events: [] };
-        console.log(">>> [GOVERNANCE] Data Layer Active.");
+    init() {
+        window.digitalData = { page: { name: document.title }, events: [] };
+        console.log(">>> [GOVERNANCE] Data Layer Initialized.");
     },
-    pushEvent: function(cat, act, lab) {
-        window.digitalData.events.push({ category: cat, action: act, label: lab, time: new Date().toISOString() });
-        console.log(`>>> [EVENT] ${act} captured.`);
+    pushEvent(category, action, label) {
+        window.digitalData.events.push({ category, action, label, time: new Date().toISOString() });
+        console.log(`>>> [EVENT] ${action} captured.`);
     }
 };
 DataManager.init();
