@@ -16,3 +16,30 @@ nav button:hover {
     border-left: 2px solid #06b6d4;
     padding-left: 14px;
 }
+/* style.css */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500&family=Inter:wght@400;700&display=swap');
+
+body { font-family: 'Inter', sans-serif; }
+#terminal { font-family: 'JetBrains Mono', monospace; }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #0B0D10; }
+::-webkit-scrollbar-thumb { background: #273140; border-radius: 10px; }
+
+/* Helium-Style Hover Effects */
+nav button:hover {
+    box-shadow: 0 0 15px rgba(64, 224, 255, 0.05);
+    border-left: 2px solid #40E0FF;
+    padding-left: 14px;
+    color: #40E0FF;
+}
+
+/* Card Glow */
+.bg-[#151A21] {
+    transition: transform 0.2s ease-in-out;
+}
+.bg-[#151A21]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}    
