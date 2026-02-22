@@ -5,21 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Glitch Intelligence | Autonomous AI Analytics</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .glitch-text { text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9; animation: noise 2s infinite; }
-        @keyframes noise { 0% { transform: translate(0); } 10% { transform: translate(-2px, 2px); } 20% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
-    </style>
 </head>
-<body class="bg-black text-white font-mono flex items-center justify-center h-screen">
-    <div class="text-center p-10 border-2 border-cyan-500 rounded-lg shadow-[0_0_20px_rgba(0,255,249,0.5)]">
-        <h1 class="text-5xl font-bold glitch-text mb-4">GLITCH INTELLIGENCE</h1>
-        <p class="text-cyan-400 text-xl mb-8 uppercase tracking-widest">Autonomous Data Auditing Live</p>
-        <div class="bg-zinc-900 p-6 rounded border border-zinc-700">
-            <p class="text-sm text-zinc-400 mb-2">// Current Status:</p>
-            <p class="text-green-500">● AI ANALYST ONLINE</p>
-            <p class="text-green-500">● GEMINI 1.5 FLASH CONNECTED</p>
-        </div>
-        <p class="mt-8 text-zinc-500 italic text-xs">Aatik Bagwan | B.Tech IT | Pune, India</p>
+<body class="bg-black text-cyan-500 font-mono min-h-screen flex flex-col items-center justify-center p-6">
+    <div class="max-w-3xl w-full border-2 border-cyan-900 bg-zinc-950 p-8 rounded-lg shadow-[0_0_30px_rgba(0,255,255,0.1)]">
+        <header class="border-b border-cyan-900 pb-6 mb-8">
+            <h1 class="text-4xl font-black tracking-tighter italic">GLITCH_INTELLIGENCE</h1>
+            <p class="text-xs mt-2 text-cyan-700 tracking-[0.3em] uppercase">Autonomous Operations Audit v1.0</p>
+        </header>
+
+        <section class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 bg-zinc-900 border border-zinc-800 rounded">
+                    <p class="text-xs text-zinc-500 mb-1">Status</p>
+                    <p class="text-green-400 font-bold">● SYSTEM_ACTIVE</p>
+                </div>
+                <div class="p-4 bg-zinc-900 border border-zinc-800 rounded">
+                    <p class="text-xs text-zinc-500 mb-1">AI Engine</p>
+                    <p class="text-white font-bold">Gemini 1.5 Flash</p>
+                </div>
+            </div>
+
+            <div class="border-2 border-dashed border-zinc-800 p-12 text-center rounded-lg hover:border-cyan-500 transition-colors cursor-pointer">
+                <p class="text-zinc-400">Drag & drop inventory CSV to detect glitches</p>
+                <p class="text-[10px] mt-2 text-zinc-600">Supported format: .csv</p>
+            </div>
+        </section>
+
+        <footer class="mt-12 text-[10px] text-zinc-700 flex justify-between">
+            <p>© 2026 GLITCH INTELLIGENCE</p>
+            <p>FOUNDER: AATIK BAGWAN</p>
+        </footer>
     </div>
 </body>
 </html>
