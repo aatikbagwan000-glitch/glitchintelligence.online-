@@ -1,0 +1,15 @@
+{
+  "project": "Glitch Intelligence",
+  "version": "2.0.0",
+  "audit_rules": {
+    "medical_bounds": {
+      "hba1c_max": 9.0,
+      "age_limit": 120
+    },
+    "data_quality": {
+      "require_unique_id": true,
+      "flag_missing_notes": true
+    },
+    "anomalies": ["contradiction", "outlier", "risk", "glitch"]
+  }
+}
