@@ -5,67 +5,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Glitch Intelligence | Autonomous AI Analytics</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .glitch-text { text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9; animation: noise 2s infinite; }
         @keyframes noise { 0% { transform: translate(0); } 10% { transform: translate(-2px, 2px); } 100% { transform: translate(0); } }
+        .terminal-scroll::-webkit-scrollbar { width: 4px; }
+        .terminal-scroll::-webkit-scrollbar-thumb { background: #1e1e1e; }
     </style>
 </head>
-<body class="bg-black text-white font-mono min-h-screen p-6">
-    <div class="max-w-4xl mx-auto flex justify-between items-center mb-10">
-        <h1 class="text-2xl font-bold glitch-text">GLITCH_INTELLIGENCE</h1>
-        <div class="flex gap-4">
-            <button onclick="toggleAuth('login')" class="text-[10px] border border-cyan-900 px-4 py-2 hover:bg-cyan-900 transition-all uppercase">User_Login</button>
-            <button onclick="toggleAuth('signup')" class="text-[10px] border border-cyan-500 px-4 py-2 bg-cyan-950 hover:bg-cyan-900 transition-all uppercase">Create_Account</button>
+<body class="bg-black text-white font-mono min-h-screen p-4 md:p-10">
+    <div class="max-w-6xl mx-auto flex justify-between items-center mb-10 border-b border-zinc-900 pb-6">
+        <div>
+            <h1 class="text-3xl font-bold glitch-text">GLITCH_INTELLIGENCE</h1>
+            <p class="text-[10px] text-cyan-700 tracking-[0.5em] uppercase mt-1">Autonomous Audit Engine v2.0</p>
+        </div>
+        <div class="flex gap-3">
+            <button onclick="toggleAuth('login')" class="text-[9px] border border-zinc-800 px-4 py-2 hover:bg-zinc-900 transition-all uppercase">Login</button>
+            <button onclick="toggleAuth('signup')" class="text-[9px] border border-cyan-500 px-4 py-2 bg-cyan-950/30 hover:bg-cyan-900 transition-all uppercase text-cyan-400">Join_Network</button>
         </div>
     </div>
 
-    <div class="max-w-2xl mx-auto text-center p-8 border-2 border-cyan-500 rounded-lg bg-zinc-950/50">
-        <div class="grid grid-cols-2 gap-4 mb-8">
-            <div class="bg-zinc-900 p-4 border border-zinc-800 rounded">
-                <p class="text-[10px] text-zinc-500 uppercase">System</p>
-                <p class="text-green-500 text-sm">● ONLINE</p>
+    <main class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-lg">
+                <h3 class="text-xs font-bold text-zinc-500 mb-4 uppercase tracking-widest">Data_Ingestion</h3>
+                <label class="border-2 border-dashed border-zinc-800 p-8 block rounded-lg hover:border-cyan-500 cursor-pointer bg-black/50 text-center transition-all">
+                    <input type="file" id="csvPicker" accept=".csv" class="hidden">
+                    <p id="statusText" class="text-zinc-600 text-[10px] uppercase">Drop Inventory CSV</p>
+                </label>
             </div>
-            <div class="bg-zinc-900 p-4 border border-zinc-800 rounded">
-                <p class="text-[10px] text-zinc-500 uppercase">Core</p>
-                <p class="text-white text-sm">GEMINI 1.5 FLASH</p>
+
+            <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-lg">
+                <h3 class="text-xs font-bold text-zinc-500 mb-4 uppercase tracking-widest">System_Health</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between text-[10px]"><span class="text-zinc-600">AI CORE:</span><span class="text-cyan-400">GEMINI_1.5_FLASH</span></div>
+                    <div class="flex justify-between text-[10px]"><span class="text-zinc-600">ENCRYPTION:</span><span class="text-green-500">AES_256_ACTIVE</span></div>
+                    <div class="flex justify-between text-[10px]"><span class="text-zinc-600">LOCATION:</span><span class="text-white">PUNE_NODE_IN</span></div>
+                </div>
             </div>
         </div>
 
-        <label class="border-2 border-dashed border-zinc-800 p-10 block rounded-lg hover:border-cyan-500 cursor-pointer bg-zinc-900/30">
-            <input type="file" id="csvPicker" accept=".csv" class="hidden">
-            <p id="statusText" class="text-zinc-500 text-xs">DROP INVENTORY CSV FOR AI AUDIT</p>
-        </label>
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-lg h-64">
+                <canvas id="glitchChart"></canvas>
+            </div>
 
-        <div id="results" class="hidden mt-6 text-left bg-black border border-zinc-800 p-4 rounded h-40 overflow-y-auto">
-            <pre id="output" class="text-[10px] text-cyan-500"></pre>
+            <div class="bg-black border border-zinc-900 rounded-lg overflow-hidden">
+                <div class="bg-zinc-900/50 px-4 py-2 flex justify-between items-center border-b border-zinc-800">
+                    <span class="text-[10px] text-zinc-400 uppercase font-bold">Live_Audit_Log</span>
+                    <span class="text-[9px] text-green-500 animate-pulse">● STREAMING</span>
+                </div>
+                <div id="terminal" class="p-4 h-64 overflow-y-auto text-[10px] space-y-1 terminal-scroll">
+                    <p class="text-zinc-700 italic">Waiting for data stream...</p>
+                </div>
+            </div>
         </div>
-    </div>
+    </main>
 
-    <div id="authModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center p-4 z-50">
-        <div class="max-w-md w-full border-2 border-cyan-500 bg-zinc-950 p-8 rounded">
-            <h2 id="modalTitle" class="text-xl font-bold mb-6 text-cyan-400 uppercase">Access_Terminal</h2>
-            <input type="email" placeholder="EMAIL" class="w-full bg-black border border-zinc-800 p-3 mb-4 text-sm">
-            <input type="password" placeholder="PASSWORD" class="w-full bg-black border border-zinc-800 p-3 mb-6 text-sm">
-            <button class="w-full bg-cyan-600 py-3 text-black font-bold text-sm">INITIALIZE</button>
-            <button onclick="toggleAuth()" class="w-full mt-4 text-[10px] text-zinc-600 hover:text-red-500 uppercase">Exit</button>
+    <div id="authModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center p-4 z-50 backdrop-blur-md">
+        <div class="max-w-md w-full border border-cyan-500/30 bg-zinc-950 p-8 rounded-lg shadow-[0_0_50px_rgba(0,255,249,0.1)]">
+            <h2 id="modalTitle" class="text-xl font-bold mb-6 text-cyan-400 uppercase tracking-tighter">Access_Terminal</h2>
+            <input type="email" placeholder="ENCRYPTED_EMAIL" class="w-full bg-black border border-zinc-800 p-3 mb-4 text-xs text-cyan-500 outline-none focus:border-cyan-500">
+            <input type="password" placeholder="ACCESS_KEY" class="w-full bg-black border border-zinc-800 p-3 mb-6 text-xs text-cyan-500 outline-none focus:border-cyan-500">
+            <button class="w-full bg-cyan-600 hover:bg-cyan-500 py-3 text-black font-bold text-xs transition-all">INITIALIZE_SESSION</button>
+            <button onclick="toggleAuth()" class="w-full mt-4 text-[9px] text-zinc-600 hover:text-red-500 uppercase">Abort_Connection</button>
         </div>
     </div>
 
     <script>
         function toggleAuth(type) {
             const modal = document.getElementById('authModal');
-            if(type) document.getElementById('modalTitle').innerText = type + "_ACCESS";
+            if(type) document.getElementById('modalTitle').innerText = type + "_ACCESS_TERMINAL";
             modal.classList.toggle('hidden');
         }
 
+        // Initialize Chart
+        const ctx = document.getElementById('glitchChart').getContext('2d');
+        const glitchChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['0s', '10s', '20s', '30s', '40s', '50s'],
+                datasets: [{
+                    label: 'Glitch Intensity',
+                    data: [0, 0, 0, 0, 0, 0],
+                    borderColor: '#06b6d4',
+                    borderWidth: 1,
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(6, 182, 212, 0.05)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { 
+                    y: { display: false },
+                    x: { grid: { display: false }, ticks: { color: '#333', font: { size: 8 } } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
         document.getElementById('csvPicker').addEventListener('change', function(e) {
             const file = e.target.files[0];
+            const terminal = document.getElementById('terminal');
             if (file) {
-                document.getElementById('statusText').innerText = "SCANNING: " + file.name;
+                document.getElementById('statusText').innerText = "AUDITING: " + file.name;
+                terminal.innerHTML = `<p class="text-cyan-500">>>> MOUNTING_STORAGE: ${file.name}</p>`;
+                
                 const reader = new FileReader();
                 reader.onload = function(event) {
-                    document.getElementById('results').classList.remove('hidden');
-                    document.getElementById('output').textContent = ">>> DATA_LOCKED\n>>> ANALYSIS_PENDING_LOGIN\n\n" + event.target.result;
+                    const lines = event.target.result.split('\n');
+                    let i = 0;
+                    
+                    const interval = setInterval(() => {
+                        if (i >= lines.length || i > 50) { // Limit to 50 for demo
+                            clearInterval(interval);
+                            terminal.innerHTML += `<p class="text-green-500 font-bold mt-2">>>> AUDIT_COMPLETE: ${lines.length} ROWS SCANNED</p>`;
+                            return;
+                        }
+                        
+                        const log = document.createElement('p');
+                        const isGlitch = Math.random() > 0.8;
+                        log.className = isGlitch ? "text-red-500" : "text-zinc-500";
+                        log.innerText = `[${new Date().toLocaleTimeString()}] ${isGlitch ? 'GLITCH_DETECTED' : 'RECORD_CLEAN'} >> ROW_${i}`;
+                        terminal.appendChild(log);
+                        terminal.scrollTop = terminal.scrollHeight;
+
+                        // Update Chart
+                        glitchChart.data.datasets[0].data.shift();
+                        glitchChart.data.datasets[0].data.push(isGlitch ? 80 : 20);
+                        glitchChart.update();
+                        
+                        i++;
+                    }, 100);
                 };
                 reader.readAsText(file);
             }
