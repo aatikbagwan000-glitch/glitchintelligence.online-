@@ -2,6 +2,21 @@
  * GLITCH INTELLIGENCE - DATA GOVERNANCE MODULE
  * Standard: W3C Digital Data Layer
  * Purpose: UTM Tracking & Behavioral Data Collection
+ // 4. PRIVACY GOVERNANCE: Consent Management
+DataManager.consent = {
+    marketing: false,
+    analytics: false,
+    
+    setConsent: function(isAgreed) {
+        this.marketing = isAgreed;
+        this.analytics = isAgreed;
+        DataManager.pushEvent('Privacy', 'Consent_Updated', isAgreed ? 'Opt-In' : 'Opt-Out');
+        
+        if(isAgreed) {
+            console.log(">>> [SECURITY] GDPR Compliance Met. Tracking Active.");
+        }
+    }
+};
  */
 
 window.digitalData = window.digitalData || {};
