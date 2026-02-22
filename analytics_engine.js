@@ -1,17 +1,31 @@
-// MODULE: Report Generator
-const ReportGenerator = {
-    downloadReport(findings, fileName) {
-        const timestamp = new Date().toLocaleString();
-        const header = `GLITCH INTELLIGENCE - AUDIT REPORT\n`;
-        const subHeader = `Target File: ${fileName}\nGenerated: ${timestamp}\n`;
-        const separator = `------------------------------------------\n`;
+// analytics_engine.js
+const AnalyticsEngine = {
+    async callAI(content) {
+        // IMPORTANT: Replace this with your actual key from Google AI Studio
+        const apiKey = "YOUR_API_KEY_HERE"; 
         
-        const blob = new Blob([header + subHeader + separator + findings], { type: 'text/plain' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `Glitch_Report_${fileName.split('.')[0]}.txt`;
-        link.click();
+        console.log(">>> [ENGINE] Attempting AI Handshake...");
         
-        AnalyticsEngine.updateDataLayer('Report_Downloaded', fileName);
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: "Analyze this CSV for errors: " + content }] }]
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error(">>> [ENGINE] API Error:", errorData);
+                throw new Error("API_REJECTED_REQUEST");
+            }
+
+            const data = await response.json();
+            return data.candidates[0].content.parts[0].text;
+        } catch (error) {
+            console.error(">>> [ENGINE] Connection Failed:", error);
+            throw error;
+        }
     }
 };
