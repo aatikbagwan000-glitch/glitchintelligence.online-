@@ -3,107 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glitch Intelligence | Autonomous AI Analytics</title>
+    <title>Glitch Intelligence | Enterprise AI Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="styles.css">
     <script src="data_layer.js"></script>
     <script src="analytics_engine.js"></script>
     <script src="theme_engine.js"></script>
 </head>
-<body class="bg-black text-white font-mono min-h-screen p-4 md:p-10 transition-colors duration-300">
-    
-    <header class="max-w-6xl mx-auto flex justify-between items-center mb-10 border-b border-zinc-900 pb-6">
-        <div>
-            <h1 class="text-3xl font-bold glitch-text uppercase">GLITCH_INTELLIGENCE</h1>
-            <p class="text-[10px] text-cyan-700 tracking-[0.5em] uppercase mt-1">Autonomous Audit Engine v2.0</p>
-        </div>
-        <div class="flex gap-3 items-center">
-            <button onclick="ThemeEngine.toggle()" class="text-[10px] border border-zinc-800 px-3 py-2 hover:bg-zinc-900 transition-all rounded-full" id="themeBtn">🌙</button>
-            <button onclick="DataManager.pushEvent('Auth', 'Login_Click', 'Header')" class="text-[9px] border border-zinc-800 px-4 py-2 hover:bg-zinc-900 transition-all uppercase">Login</button>
-            <button onclick="DataManager.pushEvent('Auth', 'Signup_Click', 'Header')" class="text-[9px] border border-cyan-500 px-4 py-2 bg-cyan-950/30 hover:bg-cyan-900 transition-all uppercase text-cyan-400">Join_Network</button>
-        </div>
-    </header>
+<body class="bg-[#0a0a0c] text-slate-300 font-sans flex min-h-screen">
 
-    <main class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-1 space-y-6">
-            <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-lg shadow-xl">
-                <h3 class="text-xs font-bold text-zinc-500 mb-4 uppercase tracking-widest">Data_Ingestion</h3>
-                <label class="border-2 border-dashed border-zinc-800 p-8 block rounded-lg hover:border-cyan-500 cursor-pointer bg-black/50 text-center transition-all">
-                    <input type="file" id="csvPicker" accept=".csv" class="hidden">
-                    <p id="statusText" class="text-zinc-600 text-[10px] uppercase">Drop Audit CSV</p>
-                </label>
+    <aside class="w-64 border-r border-zinc-900 flex flex-col p-6 space-y-8 bg-black">
+        <div class="text-white font-bold tracking-tighter text-xl">GLITCH_INTEL</div>
+        
+        <nav class="flex-1 space-y-2 text-xs uppercase tracking-widest">
+            <a href="#" class="block p-3 bg-zinc-900 text-cyan-400 rounded-lg">Overview</a>
+            <a href="#" class="block p-3 hover:bg-zinc-900 rounded-lg transition">Keyword_Audit</a>
+            <a href="#" class="block p-3 hover:bg-zinc-900 rounded-lg transition">Financial_Glitch</a>
+            <a href="#" class="block p-3 hover:bg-zinc-900 rounded-lg transition">Inventory_AI</a>
+        </nav>
+
+        <div class="border-t border-zinc-900 pt-6">
+            <button onclick="ThemeEngine.toggle()" id="themeBtn" class="w-full text-[10px] border border-zinc-800 py-2 rounded">MODE: DARK</button>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-10 overflow-y-auto">
+        <header class="flex justify-between items-center mb-10">
+            <h2 class="text-2xl font-bold text-white">Dashboard_v3.0</h2>
+            <div class="flex gap-4">
+                <button class="bg-cyan-600 text-black px-6 py-2 text-xs font-bold rounded shadow-lg shadow-cyan-900/20">UPGRADE_PRO</button>
             </div>
-            <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-lg">
-                <h3 class="text-xs font-bold text-zinc-500 mb-4 uppercase tracking-widest">System_Health</h3>
-                <div class="space-y-3 text-[10px]">
-                    <div class="flex justify-between"><span class="text-zinc-600">AI CORE:</span><span class="text-cyan-400">GEMINI_1.5_FLASH</span></div>
-                    <div class="flex justify-between"><span class="text-zinc-600">STATUS:</span><span id="aiStatus" class="text-green-500">READY</span></div>
-                </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="p-6 bg-zinc-950 border border-zinc-900 rounded-xl">
+                <p class="text-[10px] text-zinc-500 mb-1">TOTAL_AUDITS</p>
+                <h4 class="text-3xl font-bold text-white">1,284</h4>
+            </div>
+            <div class="p-6 bg-zinc-950 border border-zinc-900 rounded-xl">
+                <p class="text-[10px] text-zinc-500 mb-1">GLITCHES_CAUGHT</p>
+                <h4 class="text-3xl font-bold text-red-500">42</h4>
+            </div>
+            <div class="p-6 bg-zinc-950 border border-zinc-900 rounded-xl">
+                <p class="text-[10px] text-zinc-500 mb-1">DATA_HEALTH</p>
+                <h4 class="text-3xl font-bold text-green-500">98.2%</h4>
             </div>
         </div>
 
-        <div class="lg:col-span-2 space-y-6">
-            <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-lg h-64">
-                <canvas id="glitchChart"></canvas>
+        <section class="bg-zinc-950 border border-zinc-900 rounded-2xl p-8">
+            <div class="mb-6">
+                <h3 class="font-bold text-white">AI_ANOMALY_DETECTOR</h3>
+                <p class="text-[10px] text-zinc-500">UPLOAD CSV TO INITIATE MULTI-NODE SCAN</p>
             </div>
-            <div class="bg-black border border-zinc-900 rounded-lg overflow-hidden">
-                <div class="bg-zinc-900/50 px-4 py-2 flex justify-between items-center border-b border-zinc-800">
-                    <span class="text-[10px] text-zinc-400 uppercase font-bold">Live_Audit_Log</span>
-                    <span id="streamIndicator" class="text-[9px] text-zinc-500 uppercase">● Idle</span>
-                </div>
-                <div id="terminal" class="p-4 h-64 overflow-y-auto text-[10px] space-y-1 bg-zinc-950/20">
-                    <p class="text-zinc-700 italic">Waiting for data stream...</p>
-                </div>
+            <input type="file" id="csvPicker" class="block w-full text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-zinc-900 file:text-cyan-400 hover:file:bg-zinc-800 cursor-pointer">
+            <div id="terminal" class="mt-6 p-4 bg-black rounded-lg h-48 overflow-y-auto text-[10px] font-mono border border-zinc-900">
+                <p class="text-zinc-700 italic">SYSTEM_READY...</p>
             </div>
-            <div class="flex justify-end">
-                <button onclick="ReportGenerator.download(document.getElementById('terminal').innerText, document.getElementById('statusText').innerText)" 
-                        class="text-[9px] border border-cyan-900 bg-cyan-950/20 px-6 py-2 hover:bg-cyan-900/40 transition-all text-cyan-400 font-bold uppercase tracking-widest">
-                    Generate_Audit_Report.TXT
-                </button>
-            </div>
-        </div>
+        </section>
     </main>
-
-    <script>
-        const ctx = document.getElementById('glitchChart').getContext('2d');
-        const glitchChart = new Chart(ctx, {
-            type: 'line',
-            data: { labels: ['0s','5s','10s','15s','20s','25s'], datasets: [{ data: [0,0,0,0,0,0], borderColor: '#06b6d4', tension: 0.4 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } }
-        });
-
-        document.getElementById('csvPicker').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const terminal = document.getElementById('terminal');
-            if (file) {
-                document.getElementById('statusText').innerText = file.name.toUpperCase();
-                terminal.innerHTML = `<p class="text-cyan-500">>>> INITIATING SECURE HANDSHAKE...</p>`;
-                const reader = new FileReader();
-                reader.onload = async (event) => {
-                    try {
-                        const results = await AnalyticsEngine.callAI(event.target.result);
-                        const lines = results.split('\n');
-                        lines.forEach((line, i) => {
-                            setTimeout(() => {
-                                const log = document.createElement('p');
-                                const isGlitch = line.toLowerCase().includes('risk') || line.toLowerCase().includes('glitch');
-                                log.className = isGlitch ? "text-red-500 font-bold" : "text-zinc-500";
-                                log.innerText = `[AI_AUDIT] >> ${line}`;
-                                terminal.appendChild(log);
-                                terminal.scrollTop = terminal.scrollHeight;
-                                glitchChart.data.datasets[0].data.shift();
-                                glitchChart.data.datasets[0].data.push(isGlitch ? 85 : 10);
-                                glitchChart.update();
-                            }, i * 350);
-                        });
-                    } catch (err) {
-                        terminal.innerHTML += `<p class="text-red-600">>>> ERROR: ${err.message}</p>`;
-                    }
-                };
-                reader.readAsText(file);
-            }
-        });
-    </script>
 </body>
 </html>
