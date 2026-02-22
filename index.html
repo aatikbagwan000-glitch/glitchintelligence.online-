@@ -5,36 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Glitch Intelligence | Autonomous AI Analytics</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glitch-text { text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9; animation: noise 2s infinite; }
+        @keyframes noise { 0% { transform: translate(0); } 10% { transform: translate(-2px, 2px); } 20% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
+        .scanline { width: 100%; height: 2px; background: rgba(0, 255, 249, 0.2); position: absolute; top: 0; left: 0; animation: scan 4s linear infinite; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+    </style>
 </head>
-<body class="bg-black text-cyan-500 font-mono min-h-screen flex flex-col items-center justify-center p-6">
-    <div class="max-w-3xl w-full border-2 border-cyan-900 bg-zinc-950 p-8 rounded-lg shadow-[0_0_30px_rgba(0,255,255,0.1)]">
-        <header class="border-b border-cyan-900 pb-6 mb-8">
-            <h1 class="text-4xl font-black tracking-tighter italic">GLITCH_INTELLIGENCE</h1>
-            <p class="text-xs mt-2 text-cyan-700 tracking-[0.3em] uppercase">Autonomous Operations Audit v1.0</p>
-        </header>
+<body class="bg-black text-white font-mono min-h-screen flex items-center justify-center p-4 overflow-hidden">
+    <div class="scanline"></div>
+    
+    <div class="max-w-2xl w-full text-center p-8 border-2 border-cyan-500 rounded-lg shadow-[0_0_30px_rgba(0,255,249,0.3)] bg-zinc-950/80 relative z-10">
+        <h1 class="text-4xl font-bold glitch-text mb-2">GLITCH INTELLIGENCE</h1>
+        <p class="text-cyan-400 text-xs tracking-[0.4em] mb-8 uppercase">Autonomous Data Auditing Live</p>
 
-        <section class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="p-4 bg-zinc-900 border border-zinc-800 rounded">
-                    <p class="text-xs text-zinc-500 mb-1">Status</p>
-                    <p class="text-green-400 font-bold">● SYSTEM_ACTIVE</p>
-                </div>
-                <div class="p-4 bg-zinc-900 border border-zinc-800 rounded">
-                    <p class="text-xs text-zinc-500 mb-1">AI Engine</p>
-                    <p class="text-white font-bold">Gemini 1.5 Flash</p>
-                </div>
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <div class="bg-zinc-900/50 p-4 border border-zinc-800 rounded">
+                <p class="text-[10px] text-zinc-500 uppercase">System Status</p>
+                <p class="text-green-500 text-sm">● ONLINE</p>
             </div>
-
-            <div class="border-2 border-dashed border-zinc-800 p-12 text-center rounded-lg hover:border-cyan-500 transition-colors cursor-pointer">
-                <p class="text-zinc-400">Drag & drop inventory CSV to detect glitches</p>
-                <p class="text-[10px] mt-2 text-zinc-600">Supported format: .csv</p>
+            <div class="bg-zinc-900/50 p-4 border border-zinc-800 rounded">
+                <p class="text-[10px] text-zinc-500 uppercase">AI Core</p>
+                <p class="text-white text-sm">GEMINI 1.5 FLASH</p>
             </div>
-        </section>
+        </div>
 
-        <footer class="mt-12 text-[10px] text-zinc-700 flex justify-between">
-            <p>© 2026 GLITCH INTELLIGENCE</p>
-            <p>FOUNDER: AATIK BAGWAN</p>
-        </footer>
+        <label id="dropZone" class="border-2 border-dashed border-zinc-800 p-10 block rounded-lg hover:border-cyan-500 transition-all cursor-pointer bg-zinc-900/30">
+            <input type="file" id="csvPicker" accept=".csv" class="hidden">
+            <div id="uploadUI">
+                <p class="text-cyan-500 text-sm mb-2 font-bold">READY_TO_SCAN</p>
+                <p class="text-zinc-500 text-xs text-zinc-400">Drop inventory .csv file here or click to browse</p>
+            </div>
+        </label>
+
+        <div id="results" class="hidden mt-6 text-left bg-black border border-zinc-800 p-4 rounded max-h-48 overflow-y-auto">
+            <p class="text-cyan-400 text-xs mb-2 italic">// GLITCH_REPORT_GENERATED:</p>
+            <pre id="output" class="text-[10px] text-zinc-400"></pre>
+        </div>
+
+        <p class="mt-10 text-zinc-600 text-[10px] italic">Aatik Bagwan | B.Tech IT | Pune, India</p>
     </div>
+
+    <script>
+        const csvPicker = document.getElementById('csvPicker');
+        const uploadUI = document.getElementById('uploadUI');
+        const results = document.getElementById('results');
+        const output = document.getElementById('output');
+
+        csvPicker.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Visual feedback
+                uploadUI.innerHTML = `
+                    <p class="text-yellow-500 text-sm mb-2 animate-pulse">EXTRACTING_DATA...</p>
+                    <p class="text-zinc-500 text-[10px] uppercase">${file.name}</p>
+                `;
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    setTimeout(() => {
+                        uploadUI.innerHTML = `
+                            <p class="text-green-500 text-sm mb-2 font-bold">SCAN_COMPLETE</p>
+                            <p class="text-zinc-500 text-[10px]">REPLACE FILE TO SCAN AGAIN</p>
+                        `;
+                        results.classList.remove('hidden');
+                        output.textContent = event.target.result;
+                        console.log("Data captured for Gemini Logic:", event.target.result);
+                    }, 1500); // Artificial delay for "Pro" feel
+                };
+                reader.readAsText(file);
+            }
+        });
+    </script>
 </body>
 </html>
