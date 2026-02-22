@@ -3,112 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glitch Intelligence | Analytics Debugger</title>
+    <title>Glitch Intelligence | Enterprise Analytics Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .glitch-text { text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9; animation: noise 2s infinite; }
         @keyframes noise { 0% { transform: translate(0); } 10% { transform: translate(-2px, 2px); } 100% { transform: translate(0); } }
         .terminal-scroll::-webkit-scrollbar { width: 4px; }
-        .terminal-scroll::-webkit-scrollbar-thumb { background: #1e1e1e; }
+        .terminal-scroll::-webkit-scrollbar-thumb { background: #111; }
     </style>
-    <script>
-        // INITIALIZING THE DATA LAYER (Adobe Analytics Standard)
-        window.digitalData = {
-            page: {
-                pageInfo: {
-                    pageName: "Home: Glitch Intelligence Dashboard",
-                    destinationURL: window.location.href,
-                    sysEnv: "Production"
-                },
-                category: { primaryCategory: "Analytics Tool" }
-            },
-            user: [{ profile: [{ profileInfo: { loginStatus: "Anonymous" } }] }],
-            events: [] // Where interaction data will live
-        };
-    </script>
 </head>
-<body class="bg-black text-white font-mono min-h-screen p-4 md:p-8">
-    <div class="max-w-6xl mx-auto flex justify-between items-center mb-8 border-b border-zinc-900 pb-4">
-        <h1 class="text-2xl font-bold glitch-text">GLITCH_INTELLIGENCE</h1>
-        <div class="flex gap-4">
-            <button onclick="trackInteraction('Login Clicked', 'Header')" class="text-[10px] border border-zinc-800 px-4 py-2 hover:bg-zinc-900 transition-all uppercase">Login</button>
-            <button onclick="trackInteraction('Signup Clicked', 'Header')" class="text-[10px] border border-cyan-500/50 px-4 py-2 bg-cyan-950/20 hover:bg-cyan-900 transition-all uppercase text-cyan-400">Join_Network</button>
-        </div>
-    </div>
+<body class="bg-black text-white font-mono min-h-screen p-4 md:p-8 overflow-x-hidden">
 
-    <main class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="space-y-6">
-            <div class="bg-zinc-950 border border-zinc-900 p-8 rounded-lg">
-                <h3 class="text-xs font-bold text-zinc-500 mb-6 uppercase tracking-widest">Analytics_Testing_Zone</h3>
-                <label class="border-2 border-dashed border-zinc-800 p-12 block rounded-lg hover:border-cyan-500 cursor-pointer bg-black/50 text-center transition-all">
+    <header class="max-w-7xl mx-auto flex justify-between items-center mb-8 border-b border-zinc-900 pb-6">
+        <div>
+            <h1 class="text-2xl font-black tracking-tighter glitch-text">GLITCH_INTELLIGENCE</h1>
+            <p class="text-[9px] text-cyan-800 tracking-[0.5em] uppercase">Data Governance & Audit Platform</p>
+        </div>
+        <div class="flex gap-4">
+            <button onclick="trackEvent('Auth', 'Login_Click', 'Header')" class="text-[10px] border border-zinc-800 px-5 py-2 hover:bg-zinc-900 transition-all uppercase">Login</button>
+            <button onclick="trackEvent('Auth', 'Signup_Click', 'Header')" class="text-[10px] border border-cyan-500/40 px-5 py-2 bg-cyan-950/20 hover:bg-cyan-900 transition-all uppercase text-cyan-400">Join_Network</button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <div class="lg:col-span-5 space-y-6">
+            <div class="bg-zinc-950 border border-zinc-900 p-8 rounded-lg shadow-2xl">
+                <h3 class="text-[10px] font-bold text-zinc-600 mb-6 uppercase tracking-[0.2em]">01. Data_Ingestion_Point</h3>
+                <label class="border-2 border-dashed border-zinc-900 p-12 block rounded-lg hover:border-cyan-500/50 cursor-pointer bg-black/40 text-center transition-all group">
                     <input type="file" id="csvPicker" accept=".csv" class="hidden">
-                    <p id="statusText" class="text-zinc-600 text-xs">UPLOAD CSV TO TRIGGER DATA_LAYER EVENT</p>
+                    <p id="statusText" class="text-zinc-500 text-xs group-hover:text-cyan-400 transition-colors">DROP AUDIT FILE (.CSV)</p>
                 </label>
             </div>
             
-            <div class="p-4 bg-zinc-900/30 border border-zinc-800 rounded">
-                <p class="text-[10px] text-zinc-500 mb-2 font-bold uppercase tracking-tighter">Current digitalData Object (Live):</p>
-                <pre id="dataLayerView" class="text-[9px] text-cyan-700 bg-black p-3 rounded overflow-x-auto"></pre>
+            <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-lg relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-2 text-[8px] text-cyan-900 font-bold uppercase">Live_Object</div>
+                <h3 class="text-[10px] font-bold text-zinc-600 mb-4 uppercase tracking-[0.2em]">02. W3C_Digital_Data_Layer</h3>
+                <pre id="dataLayerView" class="text-[10px] text-cyan-600 bg-black/80 p-4 rounded h-[350px] overflow-y-auto terminal-scroll border border-zinc-900"></pre>
             </div>
         </div>
 
-        <div class="bg-black border border-zinc-900 rounded-lg overflow-hidden flex flex-col h-[500px]">
-            <div class="bg-zinc-900/80 px-4 py-2 flex justify-between items-center border-b border-zinc-800">
-                <span class="text-[10px] text-zinc-400 uppercase font-black tracking-widest">Analytics_Debugger_v1.0</span>
-                <span class="text-[9px] text-cyan-500 animate-pulse font-bold">LISTENING...</span>
-            </div>
-            <div id="debugConsole" class="p-4 flex-grow overflow-y-auto text-[10px] space-y-2 terminal-scroll bg-zinc-950/50">
-                <p class="text-zinc-700 italic">// System initialized. Data Layer active.</p>
+        <div class="lg:col-span-7">
+            <div class="bg-black border border-zinc-900 rounded-lg overflow-hidden flex flex-col h-full min-h-[600px] shadow-2xl">
+                <div class="bg-zinc-900/40 px-6 py-3 flex justify-between items-center border-b border-zinc-800">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 bg-cyan-500 rounded-full animate-ping"></div>
+                        <span class="text-[11px] text-zinc-300 uppercase font-black tracking-widest">Analytics_Debugger_v2.0</span>
+                    </div>
+                    <span class="text-[9px] text-zinc-500 font-bold tracking-widest uppercase">Console_Streaming</span>
+                </div>
+                <div id="debugConsole" class="p-6 flex-grow overflow-y-auto text-[10px] space-y-3 terminal-scroll bg-zinc-950/30">
+                    <p class="text-zinc-700 italic border-b border-zinc-900/50 pb-2">// System handshake complete. Tracking listeners active.</p>
+                </div>
             </div>
         </div>
     </main>
 
+    <footer class="max-w-7xl mx-auto mt-12 pt-6 border-t border-zinc-900 flex justify-between text-[9px] text-zinc-600">
+        <p>AATIK BAGWAN | PUNE NODE [IN]</p>
+        <p>GDPR & IAB COMPLIANT DATA GOVERNANCE</p>
+    </footer>
+
     <script>
+        // 1. DATA LAYER INITIALIZATION (Adobe Standard)
+        window.digitalData = {
+            page: {
+                pageInfo: {
+                    pageName: "Home: Glitch Intelligence Dashboard",
+                    server: "GitHub_Pages_Cloud",
+                    sysEnv: "Production"
+                }
+            },
+            events: []
+        };
+
         const debugConsole = document.getElementById('debugConsole');
         const dataLayerView = document.getElementById('dataLayerView');
 
-        // Function to update the view of our Data Layer
         function updateDataLayerView() {
             dataLayerView.textContent = JSON.stringify(window.digitalData, null, 2);
         }
 
-        // The "Adobe Launch" style tracking function
-        function trackInteraction(eventName, location) {
+        // 2. TRACKING ENGINE (Simulates Adobe Launch Rules)
+        function trackEvent(category, action, label) {
             const timestamp = new Date().toISOString();
             
-            // 1. Push to Data Layer
+            // Push to Data Layer
             const eventObj = {
-                eventName: eventName,
-                eventLocation: location,
+                category: category,
+                action: action,
+                label: label,
                 timestamp: timestamp
             };
             window.digitalData.events.push(eventObj);
             
-            // 2. Output to Debugger (Simulating Browser DevTools)
-            const log = document.createElement('div');
-            log.className = "border-l-2 border-cyan-500 pl-3 py-1 bg-zinc-900/50 my-2";
-            log.innerHTML = `
-                <p class="text-cyan-400 font-bold uppercase">[EVENT_PUSHED]</p>
-                <p class="text-zinc-500">Action: ${eventName}</p>
-                <p class="text-zinc-500">Location: ${location}</p>
-                <p class="text-zinc-400 text-[8px]">${timestamp}</p>
+            // Log to Professional Debugger
+            const logEntry = document.createElement('div');
+            logEntry.className = "border-l-2 border-cyan-900 pl-4 py-2 bg-zinc-900/20 mb-2 hover:border-cyan-500 transition-colors";
+            logEntry.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <p class="text-cyan-400 font-bold uppercase tracking-widest text-[11px]">[EVENT_FIRE]</p>
+                    <p class="text-zinc-700 text-[8px]">${timestamp}</p>
+                </div>
+                <div class="grid grid-cols-2 mt-1">
+                    <p class="text-zinc-500 uppercase">Category: <span class="text-zinc-300">${category}</span></p>
+                    <p class="text-zinc-500 uppercase">Action: <span class="text-zinc-300">${action}</span></p>
+                </div>
+                <p class="text-zinc-600 mt-1 uppercase">Prop_Label: <span class="text-cyan-800">${label}</span></p>
             `;
-            debugConsole.appendChild(log);
+            debugConsole.appendChild(logEntry);
             debugConsole.scrollTop = debugConsole.scrollHeight;
             
             updateDataLayerView();
         }
 
-        // File upload tracking
+        // 3. FILE INGESTION TRACKER
         document.getElementById('csvPicker').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                document.getElementById('statusText').innerText = "DATA_INGESTED: " + file.name;
-                trackInteraction('CSV_Upload', 'Main_Dashboard');
+                document.getElementById('statusText').innerText = "INGESTED: " + file.name.toUpperCase();
+                document.getElementById('statusText').className = "text-green-500 text-xs font-bold";
+                trackEvent('Data_Audit', 'CSV_Upload', file.name);
             }
         });
 
-        // Initial view
+        // Initialize view
         updateDataLayerView();
     </script>
 </body>
