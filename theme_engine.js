@@ -10,7 +10,7 @@ const ThemeEngine = {
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem('glitch_theme', next);
         this.updateUI(next);
-        if(window.DataManager) DataManager.pushEvent('UX', 'Theme_Toggle', next);
+        if(window.DataManager) DataManager.pushEvent('UX', 'Theme_Change', next);
     },
     updateUI(theme) {
         const btn = document.getElementById('themeBtn');
