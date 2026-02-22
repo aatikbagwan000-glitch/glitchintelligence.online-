@@ -9,14 +9,17 @@
     <link rel="stylesheet" href="styles.css">
     <script src="data_layer.js"></script>
     <script src="analytics_engine.js"></script>
+    <script src="theme_engine.js"></script>
 </head>
-<body class="bg-black text-white font-mono min-h-screen p-4 md:p-10">
+<body class="bg-black text-white font-mono min-h-screen p-4 md:p-10 transition-colors duration-300">
+    
     <header class="max-w-6xl mx-auto flex justify-between items-center mb-10 border-b border-zinc-900 pb-6">
         <div>
-            <h1 class="text-3xl font-bold text-white tracking-tighter">GLITCH_INTELLIGENCE</h1>
+            <h1 class="text-3xl font-bold glitch-text">GLITCH_INTELLIGENCE</h1>
             <p class="text-[10px] text-cyan-700 tracking-[0.5em] uppercase mt-1">Autonomous Audit Engine v2.0</p>
         </div>
-        <div class="flex gap-3">
+        <div class="flex gap-3 items-center">
+            <button onclick="ThemeEngine.toggle()" class="text-[10px] border border-zinc-800 px-3 py-2 hover:bg-zinc-900 transition-all rounded-full" id="themeBtn">🌙</button>
             <button onclick="DataManager.pushEvent('Auth', 'Login_Click', 'Header')" class="text-[9px] border border-zinc-800 px-4 py-2 hover:bg-zinc-900 transition-all uppercase">Login</button>
             <button onclick="DataManager.pushEvent('Auth', 'Signup_Click', 'Header')" class="text-[9px] border border-cyan-500 px-4 py-2 bg-cyan-950/30 hover:bg-cyan-900 transition-all uppercase text-cyan-400">Join_Network</button>
         </div>
@@ -49,7 +52,7 @@
                     <span class="text-[10px] text-zinc-400 uppercase font-bold">Live_Audit_Log</span>
                     <span id="streamIndicator" class="text-[9px] text-zinc-500 uppercase">● Idle</span>
                 </div>
-                <div id="terminal" class="p-4 h-64 overflow-y-auto text-[10px] space-y-1 terminal-scroll bg-zinc-950/20">
+                <div id="terminal" class="p-4 h-64 overflow-y-auto text-[10px] space-y-1 terminal-scroll">
                     <p class="text-zinc-700 italic">Waiting for data stream...</p>
                 </div>
             </div>
@@ -66,10 +69,8 @@
 
         document.getElementById('csvPicker').addEventListener('change', function(e) {
             const file = e.target.files[0];
-            const terminal = document.getElementById('terminal');
             if (file) {
                 document.getElementById('statusText').innerText = "AUDITING: " + file.name.toUpperCase();
-                terminal.innerHTML = `<p class="text-cyan-500">>>> INITIATING SECURE HANDSHAKE...</p>`;
                 const reader = new FileReader();
                 reader.onload = async (event) => {
                     try {
@@ -79,18 +80,16 @@
                             setTimeout(() => {
                                 const log = document.createElement('p');
                                 const isGlitch = line.toLowerCase().includes('risk') || line.toLowerCase().includes('glitch');
-                                log.className = isGlitch ? "text-red-500 font-bold" : "text-zinc-500";
+                                log.className = isGlitch ? "text-red-500" : "text-zinc-500";
                                 log.innerText = `[AI_AUDIT] >> ${line}`;
-                                terminal.appendChild(log);
-                                terminal.scrollTop = terminal.scrollHeight;
+                                document.getElementById('terminal').appendChild(log);
                                 glitchChart.data.datasets[0].data.shift();
                                 glitchChart.data.datasets[0].data.push(isGlitch ? 80 : 10);
                                 glitchChart.update();
                             }, i * 300);
                         });
-                        if(window.DataManager) DataManager.pushEvent('Audit', 'Success', file.name);
                     } catch (err) {
-                        terminal.innerHTML += `<p class="text-red-600">>>> CRITICAL_ERROR: CONNECTION_FAILED</p>`;
+                        document.getElementById('terminal').innerHTML += `<p class="text-red-600">>>> CONNECTION_FAILED: ${err.message}</p>`;
                     }
                 };
                 reader.readAsText(file);
