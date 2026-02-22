@@ -9,16 +9,11 @@
     <link rel="stylesheet" href="styles.css">
     <script src="data_layer.js"></script>
     <script src="analytics_engine.js"></script>
-    <style>
-        .glitch-text { text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9; animation: noise 2s infinite; }
-        @keyframes noise { 0% { transform: translate(0); } 10% { transform: translate(-2px, 2px); } 100% { transform: translate(0); } }
-    </style>
 </head>
 <body class="bg-black text-white font-mono min-h-screen p-4 md:p-10">
-    
     <header class="max-w-6xl mx-auto flex justify-between items-center mb-10 border-b border-zinc-900 pb-6">
         <div>
-            <h1 class="text-3xl font-bold glitch-text">GLITCH_INTELLIGENCE</h1>
+            <h1 class="text-3xl font-bold text-white tracking-tighter">GLITCH_INTELLIGENCE</h1>
             <p class="text-[10px] text-cyan-700 tracking-[0.5em] uppercase mt-1">Autonomous Audit Engine v2.0</p>
         </div>
         <div class="flex gap-3">
@@ -26,21 +21,6 @@
             <button onclick="DataManager.pushEvent('Auth', 'Signup_Click', 'Header')" class="text-[9px] border border-cyan-500 px-4 py-2 bg-cyan-950/30 hover:bg-cyan-900 transition-all uppercase text-cyan-400">Join_Network</button>
         </div>
     </header>
-
-    <section class="max-w-6xl mx-auto mb-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="p-6 border border-zinc-900 bg-zinc-950/30 rounded-lg">
-            <h4 class="text-cyan-500 text-xs font-bold uppercase mb-2">01. Autonomous Auditing</h4>
-            <p class="text-zinc-500 text-[11px] leading-relaxed">Eliminate human error. Our Gemini engine identifies structural glitches in datasets in milliseconds.</p>
-        </div>
-        <div class="p-6 border border-zinc-900 bg-zinc-950/30 rounded-lg">
-            <h4 class="text-cyan-500 text-xs font-bold uppercase mb-2">02. Data Governance</h4>
-            <p class="text-zinc-500 text-[11px] leading-relaxed">Built-in W3C Digital Data Layer ensures enterprise-grade compliance and tracking.</p>
-        </div>
-        <div class="p-6 border border-zinc-900 bg-zinc-950/30 rounded-lg">
-            <h4 class="text-cyan-500 text-xs font-bold uppercase mb-2">03. Pune Tech Node</h4>
-            <p class="text-zinc-500 text-[11px] leading-relaxed">Scalable architecture designed for the growing IT ecosystem in Pune, India.</p>
-        </div>
-    </section>
 
     <main class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-1 space-y-6">
@@ -51,7 +31,6 @@
                     <p id="statusText" class="text-zinc-600 text-[10px] uppercase">Drop Audit CSV</p>
                 </label>
             </div>
-
             <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-lg">
                 <h3 class="text-xs font-bold text-zinc-500 mb-4 uppercase tracking-widest">System_Health</h3>
                 <div class="space-y-3 text-[10px]">
@@ -65,51 +44,37 @@
             <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-lg h-64">
                 <canvas id="glitchChart"></canvas>
             </div>
-
             <div class="bg-black border border-zinc-900 rounded-lg overflow-hidden">
                 <div class="bg-zinc-900/50 px-4 py-2 flex justify-between items-center border-b border-zinc-800">
                     <span class="text-[10px] text-zinc-400 uppercase font-bold">Live_Audit_Log</span>
                     <span id="streamIndicator" class="text-[9px] text-zinc-500 uppercase">● Idle</span>
                 </div>
-                <div id="terminal" class="p-4 h-64 overflow-y-auto text-[10px] space-y-1 terminal-scroll">
+                <div id="terminal" class="p-4 h-64 overflow-y-auto text-[10px] space-y-1 terminal-scroll bg-zinc-950/20">
                     <p class="text-zinc-700 italic">Waiting for data stream...</p>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="max-w-6xl mx-auto mt-20 text-center border-t border-zinc-900 pt-8 pb-10">
-        <p class="text-zinc-600 text-[10px] tracking-widest uppercase">Aatık Bagwan | B.Tech IT | GlitchIntelligence.in</p>
-    </footer>
-
     <script>
-        // CHART INITIALIZATION
         const ctx = document.getElementById('glitchChart').getContext('2d');
         const glitchChart = new Chart(ctx, {
             type: 'line',
-            data: { labels: ['0s','5s','10s','15s','20s','25s'], datasets: [{ data: [0,0,0,0,0,0], borderColor: '#06b6d4', tension: 0.4, fill: true, backgroundColor: 'rgba(6,182,212,0.05)' }] },
+            data: { labels: ['0s','5s','10s','15s','20s','25s'], datasets: [{ data: [0,0,0,0,0,0], borderColor: '#06b6d4', tension: 0.4 }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } }
         });
 
-        const terminal = document.getElementById('terminal');
-        const streamIndicator = document.getElementById('streamIndicator');
-
-        // AUDIT LOGIC
         document.getElementById('csvPicker').addEventListener('change', function(e) {
             const file = e.target.files[0];
+            const terminal = document.getElementById('terminal');
             if (file) {
                 document.getElementById('statusText').innerText = "AUDITING: " + file.name.toUpperCase();
                 terminal.innerHTML = `<p class="text-cyan-500">>>> INITIATING SECURE HANDSHAKE...</p>`;
-                
                 const reader = new FileReader();
                 reader.onload = async (event) => {
                     try {
-                        streamIndicator.className = "text-[9px] text-green-500 animate-pulse";
-                        streamIndicator.innerText = "● STREAMING";
-                        
-                        const findings = await AnalyticsEngine.callAI(event.target.result);
-                        const lines = findings.split('\n');
-
+                        const results = await AnalyticsEngine.callAI(event.target.result);
+                        const lines = results.split('\n');
                         lines.forEach((line, i) => {
                             setTimeout(() => {
                                 const log = document.createElement('p');
@@ -118,20 +83,14 @@
                                 log.innerText = `[AI_AUDIT] >> ${line}`;
                                 terminal.appendChild(log);
                                 terminal.scrollTop = terminal.scrollHeight;
-                                
-                                // Dynamic Chart Update
                                 glitchChart.data.datasets[0].data.shift();
-                                glitchChart.data.datasets[0].data.push(isGlitch ? 80 : 15);
+                                glitchChart.data.datasets[0].data.push(isGlitch ? 80 : 10);
                                 glitchChart.update();
-                            }, i * 400);
+                            }, i * 300);
                         });
-
-                        DataManager.pushEvent('Data_Audit', 'Success', file.name);
-
+                        if(window.DataManager) DataManager.pushEvent('Audit', 'Success', file.name);
                     } catch (err) {
-                        terminal.innerHTML += `<p class="text-red-600">>>> CRITICAL_ERROR: CHECK API_KEY IN ANALYTICS_ENGINE.JS</p>`;
-                        streamIndicator.className = "text-[9px] text-red-500";
-                        streamIndicator.innerText = "● FAILED";
+                        terminal.innerHTML += `<p class="text-red-600">>>> CRITICAL_ERROR: CONNECTION_FAILED</p>`;
                     }
                 };
                 reader.readAsText(file);
